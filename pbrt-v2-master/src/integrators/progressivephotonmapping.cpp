@@ -234,20 +234,6 @@ void ProgressivePhotonIntegrator::PhotonTracingPass(const Scene *scene, const Ca
             hitpoint->flux = hitpoint->accumulatingFlux;
             hitpoint->nPhotons = hitpoint->accumulatingPhotonCount;
         }
-
-        // float rgb[3];
-        // hitpoint->flux.ToRGB(&rgb[0]);
-
-        // printf("HitPoint nPhotons: %d\n", hitpoint->nPhotons);
-        // printf("HitPoint FLux: R:%lf G:%lf B:%lf \n", rgb[0], rgb[1], rgb[2]);
-        // printf("HitPoint Radius: %lf\n", hitpoint->r);
-
-        // hitpoint->accumulatingFlux.ToRGB(&rgb[0]);
-
-        // printf("HitPoint accumulatingPhotonCount: %d\n", hitpoint->accumulatingPhotonCount);
-        // printf("HitPoint accumulatingFlux: R:%lf G:%lf B:%lf \n", rgb[0], rgb[1], rgb[2]);
-        
-
         hitpoint->accumulatingPhotonCount = 0;
         hitpoint->accumulatingFlux = Spectrum(0);
         
@@ -306,11 +292,7 @@ void ProgressivePhotonShootingTask::Run()
                     BxDFType specularType = BxDFType(BSDF_REFLECTION | BSDF_TRANSMISSION | BSDF_SPECULAR);
 
                     bool hasNonSpecular = (photonBSDF->NumComponents() > photonBSDF->NumComponents(specularType));
-                    // printf("hasNonSpecular: %d nIntersections: %d\n ", hasNonSpecular, nIntersections);
                     if (hasNonSpecular) {
-                        // printf("Start To Find HitPoint\n");
-                        // Deposit photon at surface
-
                         
                         Photon photon(photonIsect.dg.p, alpha, wo);
                         // find hit points that has this photon inside its radius 
@@ -320,12 +302,6 @@ void ProgressivePhotonShootingTask::Run()
 
                         HitPointList* hps = integrator->hitpointMap.hash_grid[hv];
 
-                        // printf("Hash Index: %d\n", hv);
-                        // printf("HitPoint Array Count: %lu\n", hps.size());
-                        // printf("Oringinal HitPoint Array Count: %lu\n", hitpoints.size());
-                        // foreach matching hit points do:
-                        // //   Record the flux and radius
-
                         HitPointList* tmpList = hps;
                         while (tmpList != NULL){
                             HitPoint* hp = tmpList->hitPoint; 
@@ -334,7 +310,7 @@ void ProgressivePhotonShootingTask::Run()
                             // printf("HitPoint Dot: %lf\n", Dot(hp->n, photonIsect.dg.nn));
                             if((hp->p - photon.p).Length() <= hp->r && Dot(hp->n, photonIsect.dg.nn) > 0.0001f)
                             {
-                                // {MutexLock lock(mutex);
+                                {MutexLock lock(mutex);
                                 // printf("In the circle of HitPoint %d\n", i);
                                 hp->accumulatingPhotonCount++;
                                 hp->accumulatingFlux+=integrator->LPhoton(photon, photonBSDF, photonIsect, wo, rng); 
@@ -342,26 +318,24 @@ void ProgressivePhotonShootingTask::Run()
                                 float rgb[3];
                                 hp->accumulatingFlux.ToRGB(&rgb[0]);
 
-                                // printf("HitPoint accumulatingPhotonCount: %d \n",hp->accumulatingPhotonCount);
-                                // printf("HitPoint accumulatingFlux: R:%lf G:%lf B:%lf \n", rgb[0], rgb[1], rgb[2]);
-                                // MutexLock unlock(mutex);
-                                // }
+                                MutexLock unlock(mutex);
+                                }
                             }
                         }
                                           
                          // NOBOOK
                     }
-                    // {
-                    //     MutexLock lock(mutex2);
-                    //     integrator->totalShots ++;
-                    //     if(integrator->totalShots >= integrator->numberOfPhotonsPerPass)
-                    //     {
-                    //         aborted = true;
-                    //         abortTasks = true;
-                    //         break;
-                    //     }
-                    //     MutexLock unlock(mutex2);
-                    // }
+                    {
+                        MutexLock lock(mutex2);
+                        integrator->totalShots ++;
+                        if(integrator->totalShots >= integrator->numberOfPhotonsPerPass)
+                        {
+                            aborted = true;
+                            abortTasks = true;
+                            break;
+                        }
+                        MutexLock unlock(mutex2);
+                    }
                     integrator->totalShots ++;
                     if(integrator->totalShots >= integrator->numberOfPhotonsPerPass)
                     {
