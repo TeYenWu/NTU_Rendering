@@ -1,9 +1,9 @@
 LookAt 0 -3.4 0   0 1 0 0 0 1
 Camera "perspective" "float fov" [45]
-Sampler "bestcandidate" "integer pixelsamples" [16]
+Sampler "bestcandidate" "integer pixelsamples" [64]
 #Sampler "lowdiscrepancy" "integer pixelsamples" [64]
 Film "image" "string filename" ["cornell.exr"]
-"integer xresolution" [100] "integer yresolution" [100]
+"integer xresolution" [400] "integer yresolution" [400]
 #SurfaceIntegrator "directlighting"
 #SurfaceIntegrator "exphotonmap"
 #	"integer causticphotons" [500000]
@@ -11,7 +11,7 @@ Film "image" "string filename" ["cornell.exr"]
 #	"integer nused" [200]
 #	"bool finalgather" ["false"]
 SurfaceIntegrator "progressivephotonmapping"
-#	"integer npass" [16]
+
 
 #SurfaceIntegrator "bidirectional"
 
@@ -96,15 +96,15 @@ Shape "sphere" "float radius" [0.35]
 AttributeEnd
 
 # mirror
-AttributeBegin
+#AttributeBegin
 # mirror material
-Material "mirror" 
-"color Kr"    [0.9 0.9 0.9]
+#Material "mirror" 
+#"color Kr"    [0.9 0.9 0.9]
 # mirror
-Shape "trianglemesh" 
-"integer indices" [2 1 0 1 3 2]
-"point P" [0.99 -0.45 0    0.99 0.45 0   0.99 -0.45 -0.9        0.99 0.45 -0.9]
-AttributeEnd
+#Shape "trianglemesh" 
+#"integer indices" [2 1 0 1 3 2]
+#"point P" [0.99 -0.45 0    0.99 0.45 0   0.99 -0.45 -0.9        #0.99 0.45 -0.9]
+#AttributeEnd
 
 WorldEnd
 
