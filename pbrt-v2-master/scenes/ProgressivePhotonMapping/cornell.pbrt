@@ -9,8 +9,9 @@ Film "image" "string filename" ["cornell.exr"]
 #	"integer causticphotons" [500000]
 #	"integer indirectphotons" [500000]
 #	"integer nused" [200]
-#	"bool finalgather" ["false"]
+#   "bool finalgather" ["false"]
 SurfaceIntegrator "progressivephotonmapping"
+    "integer nphotonsperpass" [1000]
 
 
 #SurfaceIntegrator "bidirectional"
@@ -39,7 +40,7 @@ Material "plastic"
 "color Kd"    [1 1 1]
 #		"texture Kd" "checks"
 "color Ks"    [0.1 0.1 0.1]
-"float roughness" 0.15
+#"float roughness" 0.15
 #		"texture bumpmap" "sponza-bump"
 # back wall
 Shape "trianglemesh" 
@@ -57,7 +58,7 @@ Shape "trianglemesh"
 Material "plastic" 
 "color Kd"    [0.8 0.1 0.1]
 "color Ks"    [0.1 0.1 0.1]
-"float roughness" 0.15
+#"float roughness" 0.15
 # left red wall
 Shape "trianglemesh" 
 "integer indices" [0 1 2 2 3 0]
@@ -66,7 +67,7 @@ Shape "trianglemesh"
 Material "plastic" 
 "color Kd"    [0.2 0.3 0.8]
 "color Ks"    [0.1 0.1 0.1]
-"float roughness" 0.15
+#"float roughness" 0.15
 # right blue wall
 Shape "trianglemesh" 
 "integer indices" [2 1 0 0 3 2]
@@ -75,7 +76,7 @@ AttributeEnd
 
 # glass sphere
 AttributeBegin
-Translate -0.45 0 -0.1
+Translate -0.45 0 -0.65
 # glass  material
 Material "glass" 
 "color Kr" [0.6 0.6 0.6]
@@ -91,7 +92,7 @@ Translate 0.45 0.4 -0.65
 Material "shinymetal" 
 "color Ks" [0.7 0.7 0.7]
 "color Kr" [0.8 0.8 0.8]
-"float roughness" [0.02]
+#"float roughness" [0.02]
 Shape "sphere" "float radius" [0.35]
 AttributeEnd
 

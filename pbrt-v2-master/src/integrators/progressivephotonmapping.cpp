@@ -214,6 +214,7 @@ void ProgressivePhotonIntegrator::PhotonTracingPass(const Scene *scene, const Ca
     for (uint32_t i = 0; i < photonShootingTasks.size(); ++i)
         delete photonShootingTasks[i];
     Mutex::Destroy(mutex);
+    Mutex::Destroy(mutex2);
     progress.Done();
 
     // update new flux and radius in each hitpoint
@@ -332,22 +333,15 @@ void ProgressivePhotonShootingTask::Run()
                         {
                             aborted = true;
                             abortTasks = true;
-                            break;
+                            
                         }
                         MutexLock unlock(mutex2);
-                    }
-                    integrator->totalShots ++;
-                    if(integrator->totalShots >= integrator->numberOfPhotonsPerPass)
-                    {
-                        aborted = true;
-                        abortTasks = true;
-                        break;
                     }
 
                     progress.Update(); 
                     // }}}
                      // Sample new photon ray direction
-                    if (totalShots == blockSize - 1 || aborted) break;
+                    if (totalShots == blockSize - 1 || aborted || abortTasks) break;
 
                     Vector wi;
                     float pdf;
